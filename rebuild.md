@@ -260,3 +260,103 @@ To get closer to the original, you'd need to either:
 1. Extract Spine data files (if not encrypted)
 2. Recreate animations in Spine Editor
 3. Use simpler CSS/JS animations as approximations
+
+
+---
+
+## What Do You Need to Recreate a Web Game?
+
+### Short Answer: Just the HAR File
+
+A `.har` (HTTP Archive) file is a recording of all network requests made by the browser. It contains **everything** the browser downloaded to run the game.
+
+### What's Inside a HAR File
+
+```
+.har file
+├── HTML files (index.html, etc.)
+├── JavaScript (build.js, game logic, libraries)
+├── CSS stylesheets
+├── Images (PNG, JPG, SVG, WebP)
+├── Audio (MP3, WAV, OGG)
+├── Fonts (WOFF, WOFF2, TTF)
+├── JSON configs (sprite coords, settings, translations)
+└── Any other assets loaded via HTTP
+```
+
+**The `build.js` is already inside the HAR** - you don't need it separately.
+
+### File Requirements
+
+| What You Need | Why |
+|---------------|-----|
+| `.har` file | ✅ Contains ALL downloaded assets |
+| `build.js` | ❌ Already inside the HAR |
+| Server access | ❌ Not needed for assets |
+| Source code | ❌ Not available (only compiled/minified) |
+
+### How to Capture a HAR File
+
+1. Open browser DevTools (F12)
+2. Go to **Network** tab
+3. Check "Preserve log"
+4. Load the game completely
+5. Right-click → **Save all as HAR**
+
+### What You CAN Extract & Rebuild
+
+| Asset Type | Extractable? | Rebuildable? |
+|------------|--------------|--------------|
+| Images/Sprites | ✅ Yes | ✅ Yes |
+| Audio files | ✅ Yes | ✅ Yes |
+| Fonts | ✅ Yes | ✅ Yes |
+| UI Layout | ✅ Yes | ✅ Yes |
+| Sprite coordinates | ✅ Yes (from JSON) | ✅ Yes |
+| Basic animations | ⚠️ Partial | ⚠️ Approximate |
+| Game engine (PIXI.js) | ✅ Yes (minified) | ⚠️ Hard to modify |
+| Game logic | ⚠️ Obfuscated | ❌ Need to rebuild |
+| Server communication | ✅ See requests | ❌ Can't replicate backend |
+| RNG/Win calculations | ❌ Server-side | ❌ Must implement own |
+
+### What You CANNOT Get
+
+1. **Server-side logic** - Win calculations, RNG, user accounts
+2. **Unobfuscated source code** - JS is minified/uglified
+3. **Spine animation source files** - Only runtime data (if lucky)
+4. **Encrypted assets** - Some games protect resources
+5. **Backend APIs** - Can see endpoints but not replicate responses
+
+### Extraction Process
+
+```bash
+# 1. Parse HAR file (it's just JSON)
+python extract_assets.py game.har
+
+# 2. Assets are base64 encoded in HAR
+# The script decodes and saves them
+
+# 3. Find sprite coordinates in JSON responses
+python find_sprites.py game.har
+
+# 4. Crop sprites from sprite sheets
+python extract_sprites.py
+```
+
+### Realistic Expectations
+
+| Goal | Difficulty | Result |
+|------|------------|--------|
+| Visual mockup | Easy | 90% accurate |
+| Static demo | Easy | Looks like the game |
+| Basic interactions | Medium | Buttons work, simple anims |
+| Reel spinning | Medium | Approximation |
+| Full game logic | Hard | Need to rebuild from scratch |
+| Exact replica | Very Hard | Requires reverse engineering |
+
+### TL;DR
+
+- **You only need the `.har` file** - everything is inside it
+- `build.js` and other files are extracted FROM the HAR
+- You can rebuild the visual appearance (~80-90%)
+- Game logic must be rebuilt manually
+- Server-side stuff (wins, RNG) cannot be extracted
