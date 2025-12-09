@@ -25,16 +25,17 @@ const CONFIG = {
 };
 
 // Symbol definitions with payouts (multipliers for 3, 4, 5 of a kind)
+// Using correctly extracted sprites from the texture sheets
 const SYMBOLS = [
-    { id: 'pharaoh', file: 'symbol01.png', payouts: [5, 20, 100], weight: 5 },
-    { id: 'scarab', file: 'symbol02_scarab.png', payouts: [3, 10, 50], weight: 8 },
-    { id: 'ankh', file: 'symbol_ankh.png', payouts: [2, 8, 40], weight: 10 },
-    { id: 'A', file: 'symbol_A.png', payouts: [1, 5, 20], weight: 15 },
-    { id: 'K', file: 'symbol_K.png', payouts: [1, 4, 15], weight: 15 },
-    { id: 'Q', file: 'symbol_Q.png', payouts: [0.5, 3, 10], weight: 18 },
-    { id: 'J', file: 'symbol_J.png', payouts: [0.5, 2, 8], weight: 18 },
-    { id: '10', file: 'symbol_10.png', payouts: [0.25, 1.5, 5], weight: 20 },
-    { id: '9', file: 'symbol_9.png', payouts: [0.25, 1, 4], weight: 20 },
+    { id: 'pharaoh', file: 'symbol01.png', payouts: [5, 20, 100], weight: 5 },    // Cleopatra/Pharaoh
+    { id: 'symbol03', file: 'symbol03.png', payouts: [3, 10, 50], weight: 8 },    // High value symbol
+    { id: 'symbol04', file: 'symbol04.png', payouts: [2, 8, 40], weight: 10 },    // High value symbol
+    { id: 'symbol05', file: 'symbol05.png', payouts: [1, 5, 20], weight: 15 },    // A
+    { id: 'symbol06', file: 'symbol06.png', payouts: [1, 4, 15], weight: 15 },    // K
+    { id: 'symbol07', file: 'symbol07.png', payouts: [0.5, 3, 10], weight: 18 },  // Q
+    { id: 'symbol08', file: 'symbol08.png', payouts: [0.5, 2, 8], weight: 18 },   // J
+    { id: 'symbol09', file: 'symbol09.png', payouts: [0.25, 1.5, 5], weight: 20 },// 10
+    { id: 'symbol10', file: 'symbol10.png', payouts: [0.25, 1, 4], weight: 20 },  // 9
 ];
 
 // Paylines (row indices for each reel: 0=top, 1=middle, 2=bottom)
