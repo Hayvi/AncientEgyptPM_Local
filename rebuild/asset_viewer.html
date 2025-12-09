@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asset Viewer</title>
+    <style>
+        body {
+            background: #222;
+            color: #fff;
+            font-family: monospace;
+        }
+
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        .item {
+            background: #333;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 300px;
+        }
+
+        .item img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 10px;
+            background: #444;
+        }
+
+        /* Checkerboard eventually */
+        .name {
+            word-break: break-all;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Extracted Asset Viewer</h1>
+    <p>Please look for the image containing the GAME SYMBOLS (Pharaoh, Book, Letters).</p>
+    <div class="gallery" id="gallery"></div>
+
+    <script>
+        const gallery = document.getElementById('gallery');
+
+        // List of image files from our previous list_dir
+        // Large sprite sheets - likely game graphics
+        const images = [
+            "20d7ad009ff2a804684180e437657b33.png",  // 1MB - likely main game frame
+            "d382e624bd6f17e43b3be7022061a3ca.png",  // 975KB
+            "23bfabb9d5ef72343b051b518fe1a995.png",  // 972KB
+            "efca029b5ef41654da3e3a712c28e506.png",  // 961KB
+            "82e05b072d00acf4bb721c2c3773a815.png",  // 958KB
+            "a3eb2babeac67a04cb04c41f4ab1dae2.png",  // 936KB
+            "e49e4bef3d39d1945a407c6c47bc2a37.png",  // 695KB
+            "835313e3eadfa7b4187f44724febc8c2.png",  // 465KB
+            "cdc881ba8688bc94fa31907e495e5db8.png",  // 433KB
+            "1adb931445255fa459f1947dbd64864d.png",  // 433KB
+            "b24365832962afc4c99ac17a0fff1db6.png",  // 348KB
+            "bfd97fe4b826f8f46b85743fa3d3687b.png",  // 326KB
+            "ff9f679f0b9cb7d46bde8e4dfbe31579.png",  // 259KB
+            "7fadd4a9de215914ab2ccc797ded58db.png",  // 250KB
+            "170bdd9d074f4cf448fc5e9bc16bf273.png",  // 218KB
+            "790a6ca683676d443a6b84175a48333b.png",  // 195KB
+            "2f7fc52209ccd5b4d821281ff6932a12.png",  // 155KB
+            "5736dc11077d1b74ba8fe1f054adb55e.png",  // 62KB
+            "9f365729dbd66974897a98b0751adad4.png",  // smaller
+        ];
+
+        images.forEach(imgName => {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `
+                <img src="assets/${imgName}" loading="lazy">
+                <div class="name">${imgName}</div>
+            `;
+            gallery.appendChild(div);
+        });
+    </script>
+</body>
+
+</html>

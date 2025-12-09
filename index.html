@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ancient Egypt PM - Slots Game</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            background: #0d1117;
+            font-family: 'Roboto', Arial, sans-serif;
+            overflow: hidden;
+            color: #fff;
+        }
+
+        .app-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 160px;
+            background: #161b22;
+            display: flex;
+            flex-direction: column;
+            padding: 10px;
+            border-right: 1px solid #30363d;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            margin: 3px 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            color: #8b949e;
+        }
+
+        .sidebar-item:hover { background: #21262d; color: #fff; }
+        .sidebar-item.active { background: #238636; color: #fff; }
+        .sidebar-item img { width: 20px; height: 20px; object-fit: contain; }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #0d1117;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .logo { display: flex; align-items: center; gap: 8px; }
+        .logo img { height: 28px; }
+        .logo-text { font-size: 20px; font-weight: bold; }
+
+        .header-right { display: flex; gap: 12px; align-items: center; }
+
+        .balance {
+            background: #21262d;
+            padding: 6px 16px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 14px;
+            border: 1px solid #30363d;
+        }
+
+        .login-btn {
+            background: #238636;
+            color: white;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        /* Game Area */
+        .game-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #0a0a12;
+            overflow: hidden;
+        }
+
+        /* Game Container - Uses actual background sprite */
+        .game-container {
+            position: relative;
+            width: 750px;
+            height: 480px;
+            background-image: url('rebuild/sprites/bg.png');
+            background-size: 100% 100%;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        /* Egyptian Columns - hide since they're in the background */
+        .column-left, .column-right {
+            display: none;
+        }
+
+        /* Title - hide since it's in the background */
+        .game-title {
+            display: none;
+        }
+
+        .exit-btn {
+            position: absolute;
+            top: 15px;
+            right: 80px;
+            background: #dc3545;
+            color: white;
+            border: 2px solid #fff;
+            padding: 6px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 11px;
+            z-index: 25;
+        }
+
+        /* Reels Area */
+        .reels-wrapper {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 550px;
+            height: 320px;
+            z-index: 5;
+        }
+
+        .reels-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            gap: 4px;
+        }
+
+        .reel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .symbol {
+            flex: 1;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+        }
+
+        /* Symbol classes using extracted sprites */
+        .symbol-pharaoh { background-image: url('rebuild/sprites/symbol01.png'); }
+        .symbol-scarab { background-image: url('rebuild/sprites/symbol02_scarab.png'); }
+        .symbol-ankh { background-image: url('rebuild/sprites/symbol_ankh.png'); }
+        .symbol-Q { background-image: url('rebuild/sprites/symbol_Q.png'); }
+        .symbol-J { background-image: url('rebuild/sprites/symbol_J.png'); }
+        .symbol-K { background-image: url('rebuild/sprites/symbol_K.png'); }
+        .symbol-A { background-image: url('rebuild/sprites/symbol_A.png'); }
+        .symbol-10 { background-image: url('rebuild/sprites/symbol_10.png'); }
+        .symbol-9 { background-image: url('rebuild/sprites/symbol_9.png'); }
+
+        /* Fire effect - hide since it's in the background */
+        .fire-container {
+            display: none;
+        }
+
+        /* Controls */
+        .controls {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            z-index: 20;
+        }
+
+        .ctrl-btn {
+            background: linear-gradient(180deg, #FFD700, #B8860B);
+            color: #000;
+            border: 2px solid #000;
+            padding: 8px 14px;
+            font-size: 9px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            text-transform: uppercase;
+            line-height: 1.2;
+        }
+
+        .spin-btn {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: linear-gradient(180deg, #444, #222);
+            border: 3px solid #FFD700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+        }
+
+        .spin-btn::after {
+            content: '↻';
+            font-size: 24px;
+            color: #FFD700;
+        }
+
+        /* Bottom Bar */
+        .bottom-bar {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            font-size: 9px;
+            color: #aaa;
+            z-index: 20;
+        }
+
+        .volatility-stars { color: #FFD700; }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <div class="sidebar">
+            <div class="sidebar-item active">
+                <img src="rebuild/assets/Slots.png" alt=""><span>Slots</span>
+            </div>
+            <div class="sidebar-item">
+                <img src="rebuild/assets/Roulette.png" alt=""><span>Roulette</span>
+            </div>
+            <div class="sidebar-item">
+                <img src="rebuild/assets/crash.png" alt=""><span>Crash</span>
+            </div>
+            <div class="sidebar-item">
+                <img src="rebuild/assets/Jackpot.png" alt=""><span>Plinko</span>
+            </div>
+            <div class="sidebar-item">
+                <img src="rebuild/assets/Dice.png" alt=""><span>Dice</span>
+            </div>
+            <div class="sidebar-item">
+                <img src="rebuild/assets/MineSweeper.png" alt=""><span>Minesweeper</span>
+            </div>
+            <div class="sidebar-item">
+                <img src="rebuild/assets/Tower.png" alt=""><span>Tower</span>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <div class="logo">
+                    <img src="rebuild/assets/logogg.png" alt="">
+                    <span class="logo-text">DEMO.GG</span>
+                </div>
+                <div class="header-right">
+                    <div class="balance">🪙 $1000</div>
+                    <button class="login-btn">LOGIN</button>
+                </div>
+            </div>
+
+            <div class="game-area">
+                <div class="game-container">
+                    <!-- Columns -->
+                    <div class="column-left"></div>
+                    <div class="column-right"></div>
+
+                    <!-- Title -->
+                    <div class="game-title"></div>
+
+                    <button class="exit-btn">EXIT</button>
+
+                    <!-- Reels -->
+                    <div class="reels-wrapper">
+                        <div class="reels-container">
+                            <div class="reel">
+                                <div class="symbol symbol-Q"></div>
+                                <div class="symbol symbol-pharaoh"></div>
+                                <div class="symbol symbol-K"></div>
+                            </div>
+                            <div class="reel">
+                                <div class="symbol symbol-ankh"></div>
+                                <div class="symbol symbol-scarab"></div>
+                                <div class="symbol symbol-J"></div>
+                            </div>
+                            <div class="reel">
+                                <div class="symbol symbol-pharaoh"></div>
+                                <div class="symbol symbol-J"></div>
+                                <div class="symbol symbol-10"></div>
+                            </div>
+                            <div class="reel">
+                                <div class="symbol symbol-scarab"></div>
+                                <div class="symbol symbol-ankh"></div>
+                                <div class="symbol symbol-Q"></div>
+                            </div>
+                            <div class="reel">
+                                <div class="symbol symbol-K"></div>
+                                <div class="symbol symbol-pharaoh"></div>
+                                <div class="symbol symbol-A"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fire -->
+                    <div class="fire-container">
+                        <div class="fire"></div>
+                        <div class="fire"></div>
+                        <div class="fire"></div>
+                        <div class="fire"></div>
+                        <div class="fire"></div>
+                    </div>
+
+                    <!-- Controls -->
+                    <div class="controls">
+                        <button class="ctrl-btn">BONUS<br>GAME</button>
+                        <button class="spin-btn" id="spinBtn"></button>
+                        <button class="ctrl-btn">FREE<br>SPINS</button>
+                    </div>
+
+                    <!-- Bottom -->
+                    <div class="bottom-bar">
+                        <span>VOLATILITY</span>
+                        <span class="volatility-stars">★★★★★</span>
+                        <label><input type="checkbox"> DONT SHOW NEXT TIME</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Spin
+        const symbolClasses = ['symbol-pharaoh', 'symbol-scarab', 'symbol-ankh', 'symbol-Q', 'symbol-J', 'symbol-K', 'symbol-A', 'symbol-10', 'symbol-9'];
+        
+        document.getElementById('spinBtn').addEventListener('click', function() {
+            const symbols = document.querySelectorAll('.symbol');
+            symbols.forEach((sym, i) => {
+                setTimeout(() => {
+                    sym.style.opacity = '0.5';
+                    sym.style.transform = 'scale(0.9)';
+                    setTimeout(() => {
+                        // Remove old class
+                        symbolClasses.forEach(c => sym.classList.remove(c));
+                        // Add random new class
+                        sym.classList.add(symbolClasses[Math.floor(Math.random() * symbolClasses.length)]);
+                        sym.style.opacity = '1';
+                        sym.style.transform = 'scale(1)';
+                    }, 100);
+                }, Math.floor(i / 3) * 200);
+            });
+        });
+    </script>
+</body>
+</html>
